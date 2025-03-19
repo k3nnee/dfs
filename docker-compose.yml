@@ -1,26 +1,30 @@
 services:
   master_node:
-    build: .
+    build:
+      context: .
+      dockerfile: master.Dockerfile
     ports:
       - "8080:8080"
+    environment:
+      - PORT=${PORT}
 
-  worker_node1:
-    build: .
-    ports:
-      - "8081:8080"
-    depends_on:
-      - master_node
-
-  worker_node2:
-    build: .
-    ports:
-      - "8082:8080"
-    depends_on:
-      - master_node
-
-  worker_node3:
-    build: .
-    ports:
-      - "8083:8080"
-    depends_on:
-      - master_node
+#  worker_node1:
+#    build: .
+#    ports:
+#      - "8081:8080"
+#    depends_on:
+#      - master_node
+#
+#  worker_node2:
+#    build: .
+#    ports:
+#      - "8082:8080"
+#    depends_on:
+#      - master_node
+#
+#  worker_node3:
+#    build: .
+#    ports:
+#      - "8083:8080"
+#    depends_on:
+#      - master_node
