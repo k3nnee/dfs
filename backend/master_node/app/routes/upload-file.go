@@ -6,6 +6,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"github.com/k3nnee/dfs/backend/master_node/app/constant"
 	"github.com/k3nnee/dfs/backend/master_node/app/schema"
 	"io"
 	"math/rand"
@@ -13,15 +14,6 @@ import (
 	"os"
 	"strings"
 )
-
-const maxFileSize = 10 << 20
-const blockSize = 5 << 20
-
-var allowedFileTypes = map[string]bool{
-	"application/pdf": true,
-	"image/jpeg":      true,
-	"image/png":       true,
-}
 
 func spliceData(file []byte, fileType string) (map[string]string, bool) {
 	workerNodes := strings.Split(os.Getenv("WORKER_NODES"), ",")
@@ -37,7 +29,7 @@ func spliceData(file []byte, fileType string) (map[string]string, bool) {
 
 	var splitData [][]byte
 
-	if len(file) > blockSize {
+	if len(file) > constant.BlockSize {
 		splitData = append(splitData, file[:len(file)/2])
 		splitData = append(splitData, file[len(file)/2:])
 	} else {
@@ -111,7 +103,7 @@ func handle(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Access-Control-Allow-Methods", "POST")
 
-	err := r.ParseMultipartForm(maxFileSize)
+	err := r.ParseMultipartForm(constant.MaxFileSize)
 
 	if err != nil {
 		http.Error(w, "Unable to parse file: "+err.Error(), http.StatusMethodNotAllowed)
@@ -127,7 +119,7 @@ func handle(w http.ResponseWriter, r *http.Request) {
 
 	defer file.Close()
 
-	if fileHeader.Size > maxFileSize {
+	if fileHeader.Size > constant.MaxFileSize {
 		http.Error(w, "File too large, limit of 10mb", http.StatusRequestEntityTooLarge)
 		return
 	}
@@ -142,7 +134,7 @@ func handle(w http.ResponseWriter, r *http.Request) {
 
 	fileType := http.DetectContentType(buf)
 
-	if !allowedFileTypes[fileType] {
+	if !constant.AllowedFileTypes[fileType] {
 		http.Error(w, "File type not allowed: "+fileType, http.StatusMethodNotAllowed)
 		return
 	}
