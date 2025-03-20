@@ -7,24 +7,35 @@ services:
       - "8080:8080"
     environment:
       - PORT=${PORT}
+      - WORKER_NODES=${WORKER_NODES}
+    depends_on:
+      - worker_node1
+      - worker_node2
+      - worker_node3
 
-#  worker_node1:
-#    build: .
-#    ports:
-#      - "8081:8080"
-#    depends_on:
-#      - master_node
-#
-#  worker_node2:
-#    build: .
-#    ports:
-#      - "8082:8080"
-#    depends_on:
-#      - master_node
-#
-#  worker_node3:
-#    build: .
-#    ports:
-#      - "8083:8080"
-#    depends_on:
-#      - master_node
+  worker_node1:
+    build:
+      context: .
+      dockerfile: worker.Dockerfile
+    ports:
+      - "8081:8080"
+    environment:
+      - PORT=${PORT}
+
+  worker_node2:
+    build:
+      context: .
+      dockerfile: worker.Dockerfile
+    ports:
+      - "8082:8080"
+    environment:
+      - PORT=${PORT}
+
+  worker_node3:
+    build:
+      context: .
+      dockerfile: worker.Dockerfile
+    ports:
+      - "8083:8080"
+    environment:
+      - PORT=${PORT}

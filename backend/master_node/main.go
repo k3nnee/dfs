@@ -4,6 +4,7 @@ import (
 	api "github.com/k3nnee/dfs/backend/master_node/app/routes"
 	"log"
 	"net/http"
+	"os"
 )
 
 func main() {
@@ -12,7 +13,7 @@ func main() {
 	handler.HandleFunc("/upload-data", api.UploadData)
 
 	s := &http.Server{
-		Addr:    ":8080",
+		Addr:    ":" + os.Getenv("PORT"),
 		Handler: handler,
 	}
 
