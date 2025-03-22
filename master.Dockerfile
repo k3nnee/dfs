@@ -2,17 +2,14 @@ FROM golang:1.24.1
 
 WORKDIR /app
 
-COPY ./backend/go.mod ./backend/
-
-WORKDIR /app/backend
+COPY ./backend/go.mod ./backend/go.sum /app/
 
 RUN go mod tidy
 
-COPY ./backend/master_node/ ./master_node/
+COPY ./backend/ /app/
 
-WORKDIR ./master_node
+WORKDIR /app/master_node
 
 EXPOSE 8080
 
-# Run the application
 CMD ["go", "run", "."]

@@ -3,6 +3,7 @@ FROM golang:1.24.1
 WORKDIR /app
 
 COPY ./backend/go.mod ./backend/
+COPY ./backend/go.sum ./backend/
 
 WORKDIR /app/backend
 
